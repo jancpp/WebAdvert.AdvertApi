@@ -24,7 +24,7 @@ namespace AdvertApi.Controllers
         [HttpPost]
         [Route("Create")]
         [ProducesResponseType(404)]
-        [ProducesResponseType(200, Type = typeof(CreateAdvertResponse))]
+        [ProducesResponseType(201, Type = typeof(CreateAdvertResponse))]
         public async Task<IActionResult> Create(AdvertModel model)
         {
             string recordId;
@@ -32,14 +32,13 @@ namespace AdvertApi.Controllers
             {
                 recordId = await _advertStorageService.Add(model);
             }
-            catch (KeyNotFoundException exception)
+            catch (KeyNotFoundException)
             {
                 return new NotFoundResult();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 return StatusCode(500, exception.Message);
-                throw;
             }
 
             return StatusCode(201, new CreateAdvertResponse { Id = recordId});
@@ -48,18 +47,18 @@ namespace AdvertApi.Controllers
         [HttpPut]
         [Route("Confirm")]
         [ProducesResponseType(404)]
-        [ProducesResponseType(200, Type = typeof(CreateAdvertResponse))]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> Confirm(ConfirmAdvertModel model)
         {
             try
             {
                 await _advertStorageService.Confirm(model);
             }
-            catch(KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
                 return new NotFoundResult();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 return StatusCode(500, exception.Message);
            }
